@@ -3,20 +3,34 @@ package test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
+import static apiMethods.GetEmailFromPagination.getEmailWithPagination;
 import static apiMethods.GetEmailFromBody.getEmailFromBody;
-import static apiMethods.GetEmailFromURL.getEmailFromURL;
 
+/**
+ * Класс с тест-кейсами
+ */
 public class TestMailOnReqres {
-
+    /**
+     * Первый тест-кейс
+     * В eMail записан полученная почта
+     * Проверяю на соответствие ожидаемую почту и полученую
+     */
     @Test
-    public void testMailComplianceFromBody() {
-        final Boolean eMail = getEmailFromBody("George", "Bluth");
-        Assert.assertEquals(eMail, Boolean.TRUE, "Чото не работает");
+    public void testMailComplianceFromBody() throws IOException {
+        String eMail = getEmailFromBody("George", "Bluth");
+        Assert.assertEquals(eMail, "george.bluth@reqres.in", "Почта не совпадает с ожидаемой");
     }
 
+    /**
+     * Второй тест-кейс
+     * В eMail записан полученная почта
+     * Проверяю на соответствие ожидаемую почту и полученую(со второй страницы)
+     */
     @Test
-    public void testMailComplianceFromURL() {
-        final Boolean eMail = getEmailFromURL("Michael", "Lawson");
-        Assert.assertEquals(eMail, Boolean.TRUE, "Чото не работает");
+    public void testMailComplianceFromURL() throws IOException {
+        String eMail = getEmailWithPagination("Michael", "Lawson");
+        Assert.assertEquals(eMail, "michael.lawson@reqres", "Почта не совпадает с ожидаемой");
     }
 }

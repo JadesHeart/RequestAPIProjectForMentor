@@ -1,21 +1,31 @@
 package apiMethods;
 
-import io.restassured.http.ContentType;
+import static properties.PropertiesReader.getProperies;
+import static response.ApiRequest.apiRequest;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.CoreMatchers.equalTo;
+import io.restassured.response.Response;
 
+import java.io.IOException;
+
+/**
+ * Класс с получением майла
+ */
 public class GetEmailFromBody {
-    public static Boolean getEmailFromBody(String fistName, String secondName) {
-        given()
-                .baseUri("https://reqres.in/api")
-                .basePath("/users")
-                .contentType(ContentType.JSON)
-                .when().get()
-                .then().statusCode(200)
-                .body("data.find{it.first_name =='" + fistName + "'}.email", equalTo("george.bluth@reqres.in"))
-                .and()
-                .body("data.find{it.last_name =='" + secondName + "'}.email", equalTo("george.bluth@reqres.in"));
-        return Boolean.TRUE;
+    /**
+     * Метод для получения мэйла с АПИшки
+     * 1) получаю респонс страницы
+     * 2) в переменную stringResponse засовываю почту юзера
+     *
+     * @param fistName имя
+     * @param lastName фамилия
+     * @return возвращает найденную почту
+     */
+    public static String getEmailFromBody(String fistName, String lastName) throws IOException {
+        Response pageResponse = apiRequest(getProperies("baseURL"), getProperies("basePATH"));
+        String stringResponse =
+                pageResponse.jsonPath()
+                        .getString("data.find{(it.first_name=='" + fistName + "')&&" +
+                                "(it.last_name =='" + lastName + "')}.email");
+        return stringResponse;
     }
 }
